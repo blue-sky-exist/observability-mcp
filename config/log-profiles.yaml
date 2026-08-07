@@ -1,0 +1,84 @@
+profiles:
+  # Elastic Common Schema-style logs.
+  - name: ecs
+    index_patterns:
+      - "filebeat-*"
+      - "logs-ecs-*"
+    fields:
+      timestamp: ["@timestamp"]
+      message: ["message", "log.original"]
+      project: ["service.name", "project", "application"]
+      node_ip: ["host.ip", "host.name", "beat.hostname.keyword", "beat.name.keyword", "beat.hostname", "beat.name"]
+      trace_id:
+        exact: ["trace.id", "traceId.keyword"]
+        text: ["traceId"]
+      level:
+        exact: ["log.level", "log_level.keyword"]
+        text: ["log_level"]
+      error:
+        type: ["error.type", "error_type", "exception.type"]
+        message: ["error.message", "error_message", "exception.message"]
+        stack_trace: ["error.stack_trace", "error_stack_trace", "exception.stacktrace"]
+      attributes:
+        span_id: ["span.id", "spanId"]
+        logger: ["log.logger", "log_logger"]
+        thread: ["process.thread.name", "process_thread_name"]
+        log_source: ["log.file.path", "source"]
+    sort:
+      - field: "@timestamp"
+        order: asc
+        unmapped_type: date
+
+  # Example for logs that carry a monotonically increasing offset.
+  - name: offset-log
+    index_patterns:
+      - "applog-*"
+    fields:
+      timestamp: ["@timestamp", "timestamp"]
+      message: ["message", "msg"]
+      project: ["project", "service.name", "application"]
+      node_ip: ["host.ip", "host.name", "beat.hostname.keyword", "beat.name.keyword", "beat.hostname", "beat.name"]
+      trace_id:
+        exact: ["traceId.keyword"]
+      level:
+        exact: ["log_level.keyword"]
+      error:
+        type: ["error.type", "error_type", "exception.type"]
+        message: ["error.message", "error_message", "exception.message"]
+        stack_trace: ["error.stack_trace", "error_stack_trace", "exception.stacktrace"]
+      attributes:
+        span_id: ["span.id", "spanId"]
+        logger: ["log.logger", "log_logger"]
+        thread: ["process.thread.name", "process_thread_name"]
+        log_source: ["log.file.path", "source"]
+    sort:
+      - field: offset
+        order: asc
+        unmapped_type: long
+
+  # Fallback profile. Keep it last because profiles are matched in order.
+  - name: generic
+    index_patterns:
+      - "*"
+    fields:
+      timestamp: ["@timestamp", "timestamp", "time"]
+      message: ["message", "log.message", "msg", "log.original"]
+      project: ["service.name", "project", "application", "app"]
+      node_ip: ["host.ip", "host.name", "beat.hostname.keyword", "beat.name.keyword", "beat.hostname", "beat.name"]
+      trace_id:
+        message_fallback: true
+      level:
+        message_fallback: true
+      error:
+        type: ["error.type", "error_type", "exception.type"]
+        message: ["error.message", "error_message", "exception.message"]
+        stack_trace: ["error.stack_trace", "error_stack_trace", "exception.stacktrace"]
+      attributes:
+        span_id: ["span.id", "spanId"]
+        logger: ["log.logger", "log_logger"]
+        thread: ["process.thread.name", "process_thread_name"]
+        log_source: ["log.file.path", "source"]
+    sort:
+      - field: offset
+        order: asc
+        unmapped_type: long

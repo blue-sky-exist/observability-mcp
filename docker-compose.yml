@@ -1,0 +1,11 @@
+services:
+  observability-mcp:
+    build: .
+    image: observability-mcp:1.0.0
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./config/log-profiles.yaml:/app/config/log-profiles.yaml:ro
