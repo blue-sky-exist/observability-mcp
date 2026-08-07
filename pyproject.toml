@@ -23,7 +23,7 @@ observability-mcp = "observability_mcp.__main__:main"
 [project.optional-dependencies]
 dev = [
   "pytest==9.0.2",
-  "pytest-asyncio==1.3.0",
+  "pytest-asyncio==1.4.0",
   "ruff==0.15.1",
 ]
 
