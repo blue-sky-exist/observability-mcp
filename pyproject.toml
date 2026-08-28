@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
 dependencies = [
-  "mcp==2.0.0",
+  "mcp==2.1.1",
   "httpx==0.28.1",
   "pydantic==2.13.4",
   "PyYAML==6.0.3",
